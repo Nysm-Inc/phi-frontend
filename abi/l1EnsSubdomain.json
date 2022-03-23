@@ -1,0 +1,47 @@
+[
+  {
+    "inputs": [
+      { "internalType": "contract ENS", "name": "_ens", "type": "address" },
+      { "internalType": "contract ETHRegistrarController", "name": "_ensR", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "sender", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "subdomain", "type": "string" }
+    ],
+    "name": "NewSubdomainCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "cmbyte",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "origin", "type": "string" }],
+    "name": "domainCommit",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "domainNode",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "string", "name": "subdomain", "type": "string" }],
+    "name": "subdomainRegist",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  }
+]
