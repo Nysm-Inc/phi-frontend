@@ -11,6 +11,7 @@ import {
   InputRightElement,
   Input,
   useTheme,
+  Tooltip,
 } from "@chakra-ui/react";
 import { RiExternalLinkLine, RiDeleteBin6Line, RiCheckFill } from "react-icons/ri";
 import { Abi } from "starknet";
@@ -68,107 +69,139 @@ const Cell: VFC<{
   );
 
   return (
-    <Popover>
-      <PopoverTrigger>
-        <Center
-          ref={drop}
-          bgImage="url(/land.svg)"
-          cursor="pointer"
-          w={isEdit ? "16" : "20"}
-          h={isEdit ? "16" : "20"}
-          {...(isEdit && {
-            border: "0.5px solid",
-            borderColor: "gray.50",
-          })}
-          {...(externalLink && {
-            zIndex: 1,
-            boxShadow: `0 0 8px ${theme.colors.pink[300]}`,
-            opacity: 0.8,
-            onClick: () => {
-              if (!isEdit && linkText.match(/^.+\.eth$/g)) {
-                window.location.href = externalLink;
-              }
-            },
-          })}
+    <>
+      {isEdit ? (
+        <Popover>
+          <PopoverTrigger>
+            <Center
+              ref={drop}
+              bgImage="url(/land.svg)"
+              cursor="pointer"
+              w="16"
+              h="16"
+              border="0.5px solid"
+              borderColor="gray.50"
+              {...(externalLink && {
+                zIndex: 1,
+                boxShadow: `0 0 8px ${theme.colors.pink[300]}`,
+                opacity: 0.8,
+              })}
+            >
+              {objectID ? (
+                <ObjectComponent
+                  contractAddress={L2_OBJECT_CONTRACT_ADDRESS}
+                  size={48}
+                  canDrag={isEdit}
+                  objectID={objectID}
+                  handleAfterDrop={(objectID: number) => handleChange(0)}
+                />
+              ) : (
+                <></>
+              )}
+            </Center>
+          </PopoverTrigger>
+          <PopoverContent w="24" h="12" _focus={{ boxShadow: "none" }} _focusVisible={{ outline: "none" }}>
+            <Center w="100%" h="100%">
+              <SimpleGrid columns={2}>
+                <Popover>
+                  <PopoverTrigger>
+                    <IconButton
+                      size="lg"
+                      icon={<RiExternalLinkLine />}
+                      aria-label="link"
+                      bgColor="white"
+                      border="1px solid"
+                      borderColor="gray.200"
+                      borderRadius={0}
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent
+                    w="48"
+                    h="8"
+                    border="none"
+                    _focus={{ boxShadow: "none" }}
+                    _focusVisible={{ outline: "none" }}
+                  >
+                    <Center w="100%" h="100%">
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          writeLink();
+                        }}
+                      >
+                        <InputGroup>
+                          <InputRightElement>
+                            <RiCheckFill
+                              {...(externalLink !== linkText
+                                ? {
+                                    cursor: "pointer",
+                                    color: theme.colors.gray[600],
+                                    onClick: () => writeLink(),
+                                  }
+                                : { color: theme.colors.gray[300] })}
+                            />
+                          </InputRightElement>
+                          <Input placeholder="" value={linkText} onChange={(e) => setLinkText(e.target.value)} />
+                        </InputGroup>
+                      </form>
+                    </Center>
+                  </PopoverContent>
+                </Popover>
+                <IconButton
+                  size="lg"
+                  icon={<RiDeleteBin6Line />}
+                  aria-label="link"
+                  bgColor="white"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  borderRadius={0}
+                  disabled={!objectID}
+                  onClick={() => handleChange(0)}
+                />
+              </SimpleGrid>
+            </Center>
+          </PopoverContent>
+        </Popover>
+      ) : (
+        <Tooltip
+          label={externalLink}
+          color="pink.300"
+          bgColor="whiteAlpha.800"
+          boxShadow={`0 0 8px ${theme.colors.pink[300]}`}
+          fontWeight="bold"
         >
-          {objectID ? (
-            <ObjectComponent
-              contractAddress={L2_OBJECT_CONTRACT_ADDRESS}
-              size={48}
-              canDrag={isEdit}
-              objectID={objectID}
-              handleAfterDrop={(objectID: number) => handleChange(0)}
-            />
-          ) : (
-            <></>
-          )}
-        </Center>
-      </PopoverTrigger>
-
-      {isEdit && (
-        <PopoverContent w="24" h="12" _focus={{ boxShadow: "none" }} _focusVisible={{ outline: "none" }}>
-          <Center w="100%" h="100%">
-            <SimpleGrid columns={2}>
-              <Popover>
-                <PopoverTrigger>
-                  <IconButton
-                    size="lg"
-                    icon={<RiExternalLinkLine />}
-                    aria-label="link"
-                    bgColor="white"
-                    border="1px solid"
-                    borderColor="gray.200"
-                    borderRadius={0}
-                  />
-                </PopoverTrigger>
-                <PopoverContent
-                  w="48"
-                  h="8"
-                  border="none"
-                  _focus={{ boxShadow: "none" }}
-                  _focusVisible={{ outline: "none" }}
-                >
-                  <Center w="100%" h="100%">
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        writeLink();
-                      }}
-                    >
-                      <InputGroup>
-                        <InputRightElement>
-                          <RiCheckFill
-                            {...(externalLink !== linkText
-                              ? {
-                                  cursor: "pointer",
-                                  color: theme.colors.gray[600],
-                                  onClick: () => writeLink(),
-                                }
-                              : { color: theme.colors.gray[300] })}
-                          />
-                        </InputRightElement>
-                        <Input placeholder="" value={linkText} onChange={(e) => setLinkText(e.target.value)} />
-                      </InputGroup>
-                    </form>
-                  </Center>
-                </PopoverContent>
-              </Popover>
-              <IconButton
-                size="lg"
-                icon={<RiDeleteBin6Line />}
-                aria-label="link"
-                bgColor="white"
-                border="1px solid"
-                borderColor="gray.200"
-                borderRadius={0}
-                disabled={!objectID}
-                onClick={() => handleChange(0)}
+          <Center
+            ref={drop}
+            bgImage="url(/land.svg)"
+            cursor="pointer"
+            w="20"
+            h="20"
+            {...(externalLink && {
+              zIndex: 1,
+              boxShadow: `0 0 8px ${theme.colors.pink[300]}`,
+              opacity: 0.8,
+              onClick: () => {
+                if (linkText.match(/^.+\.eth$/g)) {
+                  window.location.href = externalLink;
+                }
+              },
+            })}
+          >
+            {objectID ? (
+              <ObjectComponent
+                contractAddress={L2_OBJECT_CONTRACT_ADDRESS}
+                size={48}
+                canDrag={isEdit}
+                objectID={objectID}
+                handleAfterDrop={(objectID: number) => handleChange(0)}
               />
-            </SimpleGrid>
+            ) : (
+              <></>
+            )}
           </Center>
-        </PopoverContent>
+        </Tooltip>
       )}
-    </Popover>
+    </>
   );
 };
 
