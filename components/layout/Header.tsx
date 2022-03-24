@@ -86,6 +86,7 @@ const Header: FC<{ callbackGetENS?: () => void }> = ({ callbackGetENS }) => {
 
       <Flex alignItems="center">
         <Tooltip
+          shouldWrapChildren
           placement="bottom"
           color="blackAlpha.800"
           bgColor="whiteAlpha.800"
