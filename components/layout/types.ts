@@ -9,4 +9,8 @@ export type MyObject = {
   contractAddress: typeof L2_OBJECT_CONTRACT_ADDRESS | typeof L2_MATERIAL_CONTRACT_ADDRESS;
 };
 
-export type ClaimObject = { objectID: ObjectID; isClaimable: boolean; coupon: Coupon };
+export type ClaimObject = {
+  objectID: ObjectID;
+  isClaimable: boolean;
+  coupon: Coupon;
+};

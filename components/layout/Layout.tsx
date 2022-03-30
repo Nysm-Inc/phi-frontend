@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { FC, useState, useCallback, useEffect, useContext } from "react";
-import axios from "axios";
 import Web3 from "web3";
 import { metaMask } from "~/connectors/metamask";
-import { Abi, hash, number, shortString } from "starknet";
+import { Abi, shortString } from "starknet";
 import { useStarknet, useContract, useStarknetCall, useStarknetInvoke, InjectedConnector } from "@starknet-react/core";
 import {
   Box,
@@ -31,12 +30,11 @@ import {
 import { RiEdit2Fill, RiArrowGoBackFill, RiQuestionFill } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { EnsLogo, Soil, Uniswap, LootBalance, Twitter, Discord } from "~/public";
-import { Coupon, ObjectID, ObjectNameMap, defaultCoupon, CouponConditionMap, MaterialNameMap } from "~/types";
+import { ObjectID, ObjectNameMap, defaultCoupon, CouponConditionMap, MaterialNameMap } from "~/types";
 import { stringToBN, toBN, toNumber } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
 import { L1MessageAbi, L2LoginAbi, L2MaterialAbi, L2PhilandAbi } from "~/abi";
 import {
-  COUPON_API_ENDPOINT,
   currentENSKey,
   DISCORD_URL,
   HOW_TO_CLAIM_OBJECT,
@@ -56,6 +54,7 @@ import Header from "./Header";
 import Head from "./Head";
 import LayoutTooltip from "./Tooltip";
 import { ModalMenu, MyObject, ClaimObject } from "./types";
+import { fetchMyMaterials, fetchMyObjects, getCoupon } from "~/utils/object";
 
 const Layout: FC = ({ children }) => {
   const {
@@ -72,7 +71,10 @@ const Layout: FC = ({ children }) => {
   const toast = useToast();
   const router = useRouter();
   const { connect } = useStarknet();
-  const { contract: loginContract } = useContract({ abi: L2LoginAbi as Abi, address: L2_LOGIN_CONTRACT_ADDRESS });
+  const { contract: loginContract } = useContract({
+    abi: L2LoginAbi as Abi,
+    address: L2_LOGIN_CONTRACT_ADDRESS,
+  });
   const { contract: philandContract } = useContract({
     abi: L2PhilandAbi as Abi,
     address: L2_PHILAND_CONTRACT_ADDRESS,
@@ -99,7 +101,7 @@ const Layout: FC = ({ children }) => {
   const { data: elapsedLoginTime } = useStarknetCall({
     contract: loginContract,
     method: "check_elapsed_time",
-    args: [[stringToBN(currentENS), toBN(0)]],
+    args: currentENS ? [[stringToBN(currentENS), toBN(0)]] : [],
   });
   const { invoke: invokeClaimLoginBonus } = useStarknetInvoke({
     contract: loginContract,
@@ -132,18 +134,6 @@ const Layout: FC = ({ children }) => {
     setModalMenu("claim_objects");
     onOpen();
   }, []);
-  const getCoupon = useCallback(
-    async (objectID: ObjectID): Promise<{ objectID: ObjectID; coupon: Coupon | undefined }> => {
-      const condition = CouponConditionMap[objectID];
-      const res = await axios.get(
-        `${COUPON_API_ENDPOINT}?address=${account}&object=${condition.objectName}${
-          condition.value ? `&value=${condition.value}` : ""
-        }`
-      );
-      return { objectID: objectID, coupon: res.data.coupon };
-    },
-    [account]
-  );
   const claimObject = useCallback(
     (claimObject: ClaimObject): void => {
       if (!currentENS) return;
@@ -176,50 +166,18 @@ const Layout: FC = ({ children }) => {
     },
     [currentENS, starknetAccount]
   );
-  const fetchMyObjects = useCallback(async () => {
-    const endpoint = "https://alpha4.starknet.io/feeder_gateway/call_contract?blockId=null";
-    const len = 12;
-    const owners = [...new Array(len)].map(() => toBN(starknetAccount));
-    const tokenIDs = [...new Array(len)].reduce((memo, _, i) => [...memo, toBN(i + 1), toBN(0)], []);
-    const res = await axios.post<{ result: string[] }>(endpoint, {
-      signature: [],
-      calldata: [toBN(len), ...owners, toBN(len), ...tokenIDs],
-      contract_address: L2_OBJECT_CONTRACT_ADDRESS,
-      entry_point_selector: number.toHex(hash.starknetKeccak("balance_of_batch")),
-    });
-    const objects = res.data.result.map((res) => toNumber(res));
-    objects.shift();
-    return {
-      contractAddress: L2_OBJECT_CONTRACT_ADDRESS,
-      list: objects,
-    };
-  }, [starknetAccount]);
-
-  const fetchMyMaterials = useCallback(async () => {
-    const requests = [];
-    const len = 2;
-    for (let idx = 1; idx <= len; idx++) {
-      const request = materialContract.call("balance_of", [toBN(starknetAccount), [toBN(idx), toBN(0)]]);
-      requests.push(request);
-    }
-    const materias = await Promise.all(requests);
-    return {
-      contractAddress: L2_MATERIAL_CONTRACT_ADDRESS,
-      list: materias.map((material) => toNumber(material.res)),
-    };
-  }, [starknetAccount, materialContract]);
 
   useEffect(() => {
     if (!account) return;
 
     Promise.all([
-      getCoupon(6),
-      getCoupon(7),
-      getCoupon(8),
-      getCoupon(9),
-      getCoupon(10),
-      getCoupon(11),
-      getCoupon(12),
+      getCoupon(account, 6),
+      getCoupon(account, 7),
+      getCoupon(account, 8),
+      getCoupon(account, 9),
+      getCoupon(account, 10),
+      getCoupon(account, 11),
+      getCoupon(account, 12),
     ]).then((coupons) => {
       const copied: ClaimObject[] = JSON.parse(JSON.stringify(claimObjects));
       coupons.forEach((coupon) => {
@@ -241,7 +199,10 @@ const Layout: FC = ({ children }) => {
 
     (async () => {
       const fetchObjects: MyObject[] = [];
-      const response = await Promise.all([fetchMyObjects(), fetchMyMaterials()]);
+      const response = await Promise.all([
+        fetchMyObjects(starknetAccount),
+        fetchMyMaterials(starknetAccount, materialContract),
+      ]);
 
       response.forEach((res) => {
         res.list.forEach((object, i) => {
@@ -257,7 +218,7 @@ const Layout: FC = ({ children }) => {
       });
       setMyObjects(fetchObjects);
     })();
-  }, [starknetAccount, refleshMyObjects]);
+  }, [starknetAccount, refleshMyObjects, isEdit]);
 
   return (
     <>
@@ -390,7 +351,7 @@ const Layout: FC = ({ children }) => {
                 aria-label="login_bonus"
                 icon={<Image src={Soil} width="40px" height="40px" />}
                 // @ts-ignore
-                disabled={elapsedLoginTime && toNumber(elapsedLoginTime?.elapsed_time) <= LOGIN_DURATION}
+                disabled={!(elapsedLoginTime && toNumber(elapsedLoginTime?.elapsed_time) >= LOGIN_DURATION)}
                 onClick={() => {
                   if (starknetAccount) {
                     invokeClaimLoginBonus({

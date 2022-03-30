@@ -1,24 +1,26 @@
 import Image from "next/image";
-import { useEffect, useCallback, useContext } from "react";
-import { getStarknet } from "@argent/get-starknet";
+import { useEffect, useContext, useState } from "react";
+import { InjectedConnector, useStarknet } from "@starknet-react/core";
 import { Button, Text } from "@chakra-ui/react";
 import { ArgentLogo } from "~/public";
 import { AppContext } from "~/contexts";
 
 const WalletStarknet = () => {
-  const { starknetAccount, handleStarknetAccount } = useContext(AppContext);
-  const starknet = getStarknet();
-
-  const checkMissingWallet = useCallback(async () => {
-    try {
-      const accounts = await starknet.enable();
-      handleStarknetAccount(accounts ? accounts[0] : "");
-    } catch (e) {}
-  }, [starknet]);
+  const { handleStarknetAccount } = useContext(AppContext);
+  const { account: starknetAccount, connect } = useStarknet();
+  const [reflesh, setReflesh] = useState(false);
 
   useEffect(() => {
-    checkMissingWallet();
-  }, [checkMissingWallet]);
+    if (!starknetAccount) {
+      connect(new InjectedConnector());
+    } else {
+      handleStarknetAccount(starknetAccount);
+    }
+  }, [starknetAccount, connect, handleStarknetAccount, reflesh]);
+
+  useEffect(() => {
+    setTimeout(() => setReflesh(true), 1000);
+  }, []);
 
   return (
     <>
@@ -27,7 +29,7 @@ const WalletStarknet = () => {
           size="sm"
           variant="outline"
           leftIcon={<Image src={ArgentLogo} width="16px" height="16px" />}
-          onClick={checkMissingWallet}
+          onClick={() => connect(new InjectedConnector())}
         >
           <Text fontSize="sm" fontWeight="bold">
             Connect Wallet

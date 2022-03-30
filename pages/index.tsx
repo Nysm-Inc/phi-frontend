@@ -17,7 +17,6 @@ import {
   Spacer,
   useClipboard,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { RiSave3Line } from "react-icons/ri";
 import { CopyIcon } from "@chakra-ui/icons";
 import Web3 from "web3";
@@ -26,18 +25,19 @@ import { useStarknet, useContract, useStarknetCall, useStarknetInvoke, InjectedC
 import { PhiLogo, TwitterWhite } from "~/public";
 import { ObjectID, defaultPhiland, defaultPhilandLinks, PhilandHolder } from "~/types";
 import { Cell, Search } from "~/components/philand";
-import {
-  frontendURL,
-  L1_MESSAGE_CONTRACT_ADDRESS,
-  L2_PHILAND_CONTRACT_ADDRESS,
-  PHILAND_HOLDERS_API_ENDPOINT,
-} from "~/constants";
+import { frontendURL, L1_MESSAGE_CONTRACT_ADDRESS, L2_PHILAND_CONTRACT_ADDRESS } from "~/constants";
 import { L1MessageAbi, L2PhilandAbi } from "~/abi";
 import { AppContext } from "~/contexts";
 import { toastOption } from "~/components/transaction";
 import { stringToBN, toBN } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
-import { convertPhiland, convertPhilandLinks, isEmptyLinks, isEmptyPhiland } from "~/utils/philand";
+import {
+  convertPhiland,
+  convertPhilandLinks,
+  fetchPhilandHolders,
+  isEmptyLinks,
+  isEmptyPhiland,
+} from "~/utils/philand";
 
 const Index: NextPage = () => {
   const { account, starknetAccount, currentENS, isEdit, isCreatedPhiland, handleCreatePhiland } =
@@ -59,12 +59,12 @@ const Index: NextPage = () => {
   const { data: dataPhiland } = useStarknetCall({
     contract,
     method: "view_philand",
-    args: [[stringToBN(currentENS), toBN(0)]],
+    args: currentENS ? [[stringToBN(currentENS), toBN(0)]] : [],
   });
   const { data: dataLinks } = useStarknetCall({
     contract,
     method: "view_links",
-    args: [[stringToBN(currentENS), toBN(0)]],
+    args: currentENS ? [[stringToBN(currentENS), toBN(0)]] : [],
   });
   const diff = useMemo(() => {
     const diffX: number[] = [];
@@ -80,12 +80,22 @@ const Index: NextPage = () => {
       });
     });
     return { x: diffX, y: diffY, object: diffObjectID };
-  }, [philand]);
+  }, [philand, prevPhiland]);
 
   const { invoke: invokeBatchWriteObject } = useStarknetInvoke({
     contract,
     method: "batch_write_object_to_parcel",
   });
+  const savePhiland = useCallback(() => {
+    invokeBatchWriteObject({
+      args: [
+        diff.x.map((x) => toBN(x)),
+        diff.y.map((y) => toBN(y)),
+        [stringToBN(currentENS), toBN(0)],
+        diff.object.map((o) => toBN(o)),
+      ],
+    });
+  }, [diff, currentENS]);
   const handleChangePhiland = useCallback((i: number, j: number, objectID: ObjectID) => {
     setPhiland((old) => {
       const copied = JSON.parse(JSON.stringify(old));
@@ -93,16 +103,12 @@ const Index: NextPage = () => {
       return copied;
     });
   }, []);
-  const fetchPhilandHolders = async (): Promise<PhilandHolder[]> => {
-    const res = await axios.get<{ result: PhilandHolder[] }>(PHILAND_HOLDERS_API_ENDPOINT);
-    return res.data.result;
-  };
   const polling = useCallback(async () => {
     if (isCreatedPhilandRef.current) {
       return;
     } else {
       setRefleshPhilandHolders((old) => !old);
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 5));
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 10));
       await polling();
     }
   }, [isCreatedPhilandRef]);
@@ -123,16 +129,6 @@ const Index: NextPage = () => {
         }
       });
   };
-  const handleSave = useCallback(() => {
-    invokeBatchWriteObject({
-      args: [
-        diff.x.map((x) => toBN(x)),
-        diff.y.map((y) => toBN(y)),
-        [stringToBN(currentENS), toBN(0)],
-        diff.object.map((o) => toBN(o)),
-      ],
-    });
-  }, [diff, currentENS]);
 
   useEffect(() => {
     if (isEmptyPhiland(dataPhiland)) return;
@@ -201,7 +197,7 @@ const Index: NextPage = () => {
                     icon={<RiSave3Line size="32px" color={theme.colors.white} />}
                     onClick={() => {
                       if (starknetAccount) {
-                        handleSave();
+                        savePhiland();
                       } else {
                         connect(new InjectedConnector());
                       }

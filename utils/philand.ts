@@ -1,4 +1,6 @@
-import { defaultPhiland, defaultPhilandLinks } from "~/types";
+import axios from "axios";
+import { PHILAND_HOLDERS_API_ENDPOINT } from "~/constants";
+import { defaultPhiland, defaultPhilandLinks, PhilandHolder } from "~/types";
 import { toNumber, toString } from "./cairo";
 
 export const isEmptyPhiland = (dataPhiland?: any[]): boolean => {
@@ -31,4 +33,9 @@ export const convertPhilandLinks = (dataLinks: any[]): string[][] => {
     copied[Math.floor(i / 8)][Math.floor(i % 8)] = targetOwner === "0" ? "" : targetOwner;
   });
   return copied;
+};
+
+export const fetchPhilandHolders = async (): Promise<PhilandHolder[]> => {
+  const res = await axios.get<{ result: PhilandHolder[] }>(PHILAND_HOLDERS_API_ENDPOINT);
+  return res.data.result;
 };

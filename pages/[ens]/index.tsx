@@ -24,12 +24,12 @@ const Index: NextPage = () => {
   const { data: dataPhiland } = useStarknetCall({
     contract,
     method: "view_philand",
-    args: [[stringToBN(ens as string), toBN(0)]],
+    args: ens ? [[stringToBN(ens as string), toBN(0)]] : [],
   });
   const { data: dataLinks } = useStarknetCall({
     contract,
     method: "view_links",
-    args: [[stringToBN(ens as string), toBN(0)]],
+    args: ens ? [[stringToBN(ens as string), toBN(0)]] : [],
   });
 
   useEffect(() => {

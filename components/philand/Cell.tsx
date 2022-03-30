@@ -1,4 +1,4 @@
-import { VFC, useState, useCallback, useContext } from "react";
+import { VFC, useState, useContext } from "react";
 import { useDrop } from "react-dnd";
 import {
   Center,
@@ -39,7 +39,7 @@ const Cell: VFC<{
   const [linkText, setLinkText] = useState(externalLink);
 
   const { invoke } = useStarknetInvoke({ contract, method: "write_link" });
-  const writeLink = useCallback(() => {
+  const writeLink = () => {
     if (!starknetAccount) {
       connect(new InjectedConnector());
       return;
@@ -54,7 +54,7 @@ const Cell: VFC<{
         [stringToBN(linkText), toBN(0)],
       ],
     });
-  }, [currentENS, starknetAccount, linkText]);
+  };
   const [{ canDrop }, drop] = useDrop(
     () => ({
       accept: "OBJECT",
