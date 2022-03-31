@@ -3,27 +3,12 @@ import { VFC, useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Tooltip } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
-import {
-  ObjectID,
-  ObjectMetadata,
-  Metadata,
-  defaultMetadata,
-  MaterialMetadata,
-  MetaPrimitiveMaterialMetadata,
-} from "~/types";
-import {
-  L2_MATERIAL_CONTRACT_ADDRESS,
-  L2_OBJECT_CONTRACT_ADDRESS,
-  MetaCraftedMaterialContractAddress,
-  MetaPrimitiveMaterialContractAddress,
-} from "~/constants";
-import { MaterialImages, MetaPrimitiveMaterialImages, ObjectImages } from "./objectImage";
+import { ObjectID, ObjectMetadata, Metadata, defaultMetadata, MaterialMetadata } from "~/types";
+import { L2_MATERIAL_CONTRACT_ADDRESS, L2_OBJECT_CONTRACT_ADDRESS } from "~/constants";
+import { MaterialImages, ObjectImages } from "./objectImage";
 
 const ObjectComponent: VFC<{
-  contractAddress:
-    | typeof L2_OBJECT_CONTRACT_ADDRESS
-    | typeof L2_MATERIAL_CONTRACT_ADDRESS
-    | typeof MetaPrimitiveMaterialContractAddress;
+  contractAddress: typeof L2_OBJECT_CONTRACT_ADDRESS | typeof L2_MATERIAL_CONTRACT_ADDRESS;
   size: number;
   canDrag: boolean;
   objectID: ObjectID;
@@ -34,7 +19,6 @@ const ObjectComponent: VFC<{
   const src = {
     [L2_OBJECT_CONTRACT_ADDRESS]: ObjectImages[objectID],
     [L2_MATERIAL_CONTRACT_ADDRESS]: MaterialImages[objectID],
-    [MetaPrimitiveMaterialContractAddress]: MetaPrimitiveMaterialImages[objectID],
   }[contractAddress];
 
   const [{ isDragging }, drag] = useDrag(
@@ -67,7 +51,6 @@ const ObjectComponent: VFC<{
       const url = {
         [L2_OBJECT_CONTRACT_ADDRESS]: ObjectMetadata[objectID],
         [L2_MATERIAL_CONTRACT_ADDRESS]: MaterialMetadata[objectID],
-        [MetaPrimitiveMaterialContractAddress]: MetaPrimitiveMaterialMetadata[objectID],
       }[contractAddress];
       const res = await axios.get<Metadata>(url);
       setMetadata(res.data);

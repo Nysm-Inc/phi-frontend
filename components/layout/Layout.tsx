@@ -30,14 +30,7 @@ import {
 import { RiEdit2Fill, RiArrowGoBackFill, RiQuestionFill } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { EnsLogo, Soil, Uniswap, LootBalance, Twitter, Discord } from "~/public";
-import {
-  ObjectID,
-  ObjectNameMap,
-  defaultCoupon,
-  CouponConditionMap,
-  MaterialNameMap,
-  MetaPrimitiveMaterialNameMap,
-} from "~/types";
+import { ObjectID, ObjectNameMap, defaultCoupon, CouponConditionMap, MaterialNameMap } from "~/types";
 import { stringToBN, toBN, toNumber } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
 import { L1MessageAbi, L2LoginAbi, L2MaterialAbi, L2PhilandAbi } from "~/abi";
@@ -227,8 +220,12 @@ const Layout: FC = ({ children }) => {
             // todo
             let objectID = i;
             let address = res.contractAddress;
-            if (res.contractAddress === MetaCraftedMaterialContractAddress) {
+            if (res.contractAddress === MetaPrimitiveMaterialContractAddress) {
               objectID += 12;
+              address = L2_OBJECT_CONTRACT_ADDRESS;
+            }
+            if (res.contractAddress === MetaCraftedMaterialContractAddress) {
+              objectID += 16;
               address = L2_OBJECT_CONTRACT_ADDRESS;
             }
             fetchObjects.push({
@@ -501,7 +498,6 @@ const Layout: FC = ({ children }) => {
                                 {
                                   [L2_OBJECT_CONTRACT_ADDRESS]: ObjectNameMap[object.objectID],
                                   [L2_MATERIAL_CONTRACT_ADDRESS]: MaterialNameMap[object.objectID],
-                                  [MetaPrimitiveMaterialContractAddress]: MetaPrimitiveMaterialNameMap[object.objectID],
                                 }[object.contractAddress]
                               }
                             </Text>

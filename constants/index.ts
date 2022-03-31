@@ -29,5 +29,5 @@ export const frontendURL = "https://goerli.philand.xyz";
 export const phiENSDomain = "phi.eth";
 
 export const MetaPrimitiveMaterialContractAddress =
-  "0x071d8da7a18b46e8e9a819c4c9990a0c5c7f26ecf577607ace629f387a980242";
-export const MetaCraftedMaterialContractAddress = "0x03c41a9cf2c8aa1af874db7fb00aed431eb1545d9591b643d86c0d54c2cd935b";
+  "0x0307c08ad4be8edfdf89bd23f07ad6cf56caa7b89ad68dddedb00cfa66aff997";
+export const MetaCraftedMaterialContractAddress = "0x02fac551fc52814c7573ab95a8fc6f5507101b10042c71f7d0574c83ae3c8f54";

@@ -36,23 +36,21 @@ export const ObjectImages: { [key in ObjectID]: StaticImageData } = {
   10: VotersMonument,
   11: ETHSalon,
   12: SpriteBox,
-  13: MetaBrick,
-  14: MetaBrickHouse,
-  15: null,
-  16: null,
-  17: MetaPla,
-  18: MetaSteel,
-  19: MetaComputer,
-  20: MetaDenki,
+  //
+  13: MetaSoil,
+  14: MetaOil,
+  15: MetaSeed,
+  16: MetaIron,
+  17: MetaBrick,
+  18: MetaBrickHouse,
+  19: null,
+  20: null,
+  21: MetaPla,
+  22: MetaSteel,
+  23: MetaComputer,
+  24: MetaDenki,
 };
 
 export const MaterialImages: { [key in MaterialID]: StaticImageData } = {
   1: Soil,
-};
-
-export const MetaPrimitiveMaterialImages: { [key in MaterialID]: StaticImageData } = {
-  1: MetaSoil,
-  2: MetaOil,
-  3: MetaSeed,
-  4: MetaIron,
 };

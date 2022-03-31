@@ -13,14 +13,18 @@ export const ObjectNameMap: { [key in ObjectID]: string } = {
   10: "Voter’s Monument",
   11: "ETH Salon",
   12: "Sprite-Box",
-  13: "Brick",
-  14: "BrickHouse",
-  15: "Wood",
-  16: "IronSword",
-  17: "Steel",
-  18: "Plastic",
-  19: "Computer",
-  20: "ElectronicsStore",
+  13: "Soil",
+  14: "Oil",
+  15: "Seed",
+  16: "Iron",
+  17: "Brick",
+  18: "BrickHouse",
+  19: "Wood",
+  20: "IronSword",
+  21: "Steel",
+  22: "Plastic",
+  23: "Computer",
+  24: "ElectronicsStore",
 };
 
 export type ObjectName = "snapshot" | "uniswap" | "lootbalance" | "ethbalance" | "polygon";
@@ -69,14 +73,18 @@ export const ObjectMetadata: { [key in ObjectID]: string } = {
   10: "https://dweb.link/ipfs/bafyreigb2ltsvhr4lgt6h2xmsyakw2nrxj3f4j6zb34n64au3t5ae4vhz4/metadata.json",
   11: "https://bafyreicud4icbxdgukl7u3fjxovoildamvwlh2pf7ipldyolrx6n3sqtiu.ipfs.dweb.link/metadata.json",
   12: "https://bafyreib62zurt4enxttuydrtfpew4wti4u7bnd25dichniqdxhdipjscia.ipfs.dweb.link/metadata.json",
-  13: "https://www.arweave.net/KjqkYSiyOL3K0nuHdNMGzBg6NjPgiHoVZSumQ8w9pGo",
-  14: "https://www.arweave.net/CjtHPTawClEneCHb0KHJSJQob2CpA6VMWxGOg0k3Knk",
-  15: "https://www.arweave.net/cGQOJuN2Hno4fdiAZ8sUhOqUEaMrJY1ksonKzl_rqDc",
-  16: "https://www.arweave.net/v01wZhAJsRhGNfERsKsYSQM8hJT-jFvwEYxCq8MYQhY",
-  17: "https://www.arweave.net/g7ga9c7d7pYAAKFjNc4tFbGCQ0IjnLxY3MuneV3jJ_A",
-  18: "https://www.arweave.net/teFq3fe-G_ea7KgHfWuDFunyZ-IqmIcWu9ko_mKub1g",
-  19: "https://www.arweave.net/XS1uJMGquJgeeqwq3KPjXqhAhHTFp0KJfZX0hK5_v68",
-  20: "https://www.arweave.net/fLBsJwFYAiN8pWXwDDFJqam2WRYdo9QsYb6KmXzAf24",
+  13: "https://www.arweave.net/5YrW3gGztNlw8AIvvRgDAvf51EiT-ax3xhKDvABL6G8",
+  14: "https://www.arweave.net/j2VW88KWd4b2LUpfYUeyTeWbYAlp7w5l7bjcuZv4cN0",
+  15: "https://www.arweave.net/uIY0_wHpsJFMQ9haSi0VAqKUnrHuXRLITiF92U_I4-Q",
+  16: "https://www.arweave.net/nzV3l2Nq8V98z8uX7zy0SIoBJrCnQaK9fhNxO8Wjyb4",
+  17: "https://www.arweave.net/KjqkYSiyOL3K0nuHdNMGzBg6NjPgiHoVZSumQ8w9pGo",
+  18: "https://www.arweave.net/CjtHPTawClEneCHb0KHJSJQob2CpA6VMWxGOg0k3Knk",
+  19: "https://www.arweave.net/cGQOJuN2Hno4fdiAZ8sUhOqUEaMrJY1ksonKzl_rqDc",
+  20: "https://www.arweave.net/v01wZhAJsRhGNfERsKsYSQM8hJT-jFvwEYxCq8MYQhY",
+  21: "https://www.arweave.net/g7ga9c7d7pYAAKFjNc4tFbGCQ0IjnLxY3MuneV3jJ_A",
+  22: "https://www.arweave.net/teFq3fe-G_ea7KgHfWuDFunyZ-IqmIcWu9ko_mKub1g",
+  23: "https://www.arweave.net/XS1uJMGquJgeeqwq3KPjXqhAhHTFp0KJfZX0hK5_v68",
+  24: "https://www.arweave.net/fLBsJwFYAiN8pWXwDDFJqam2WRYdo9QsYb6KmXzAf24",
 };
 
 export type Metadata = {
@@ -102,20 +110,6 @@ export const MaterialNameMap: { [key in MaterialID]: string } = {
 
 export const MaterialMetadata: { [key in MaterialID]: string } = {
   1: "https://bafyreihuydndhyqyu6x4rd2ofbpyfxeptva7tqlqdm3rlp4ub6dvgn3xry.ipfs.dweb.link/metadata.json",
-};
-
-export const MetaPrimitiveMaterialNameMap: { [key in MaterialID]: string } = {
-  1: "Soil",
-  2: "Oil",
-  3: "Seed",
-  4: "Iron",
-};
-
-export const MetaPrimitiveMaterialMetadata: { [key in MaterialID]: string } = {
-  1: "https://www.arweave.net/5YrW3gGztNlw8AIvvRgDAvf51EiT-ax3xhKDvABL6G8",
-  2: "https://www.arweave.net/j2VW88KWd4b2LUpfYUeyTeWbYAlp7w5l7bjcuZv4cN0",
-  3: "https://www.arweave.net/uIY0_wHpsJFMQ9haSi0VAqKUnrHuXRLITiF92U_I4-Q",
-  4: "https://www.arweave.net/nzV3l2Nq8V98z8uX7zy0SIoBJrCnQaK9fhNxO8Wjyb4",
 };
 
 export const defaultPhiland: ObjectID[][] = [

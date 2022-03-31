@@ -17,12 +17,7 @@ import { RiExternalLinkLine, RiDeleteBin6Line, RiCheckFill } from "react-icons/r
 import { Abi } from "starknet";
 import { useStarknet, useContract, useStarknetInvoke, InjectedConnector } from "@starknet-react/core";
 import { ObjectID } from "~/types";
-import {
-  L2_MATERIAL_CONTRACT_ADDRESS,
-  L2_OBJECT_CONTRACT_ADDRESS,
-  L2_PHILAND_CONTRACT_ADDRESS,
-  MetaPrimitiveMaterialContractAddress,
-} from "~/constants";
+import { L2_MATERIAL_CONTRACT_ADDRESS, L2_OBJECT_CONTRACT_ADDRESS, L2_PHILAND_CONTRACT_ADDRESS } from "~/constants";
 import { L2PhilandAbi } from "~/abi";
 import { toBN, stringToBN } from "~/utils/cairo";
 import { AppContext } from "~/contexts";
@@ -32,10 +27,7 @@ const Cell: VFC<{
   x: number;
   y: number;
   objectID: ObjectID;
-  contractAddress:
-    | typeof L2_OBJECT_CONTRACT_ADDRESS
-    | typeof L2_MATERIAL_CONTRACT_ADDRESS
-    | typeof MetaPrimitiveMaterialContractAddress;
+  contractAddress: typeof L2_OBJECT_CONTRACT_ADDRESS | typeof L2_MATERIAL_CONTRACT_ADDRESS;
   externalLink: string;
   isEdit: boolean;
   handleChange?: (objectID: ObjectID) => void;
@@ -98,7 +90,7 @@ const Cell: VFC<{
             >
               {objectID ? (
                 <ObjectComponent
-                  contractAddress={L2_OBJECT_CONTRACT_ADDRESS}
+                  contractAddress={contractAddress}
                   size={48}
                   canDrag={isEdit}
                   objectID={objectID}
