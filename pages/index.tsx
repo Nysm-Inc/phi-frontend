@@ -80,7 +80,7 @@ const Index: NextPage = () => {
       });
     });
     return { x: diffX, y: diffY, object: diffObjectID };
-  }, [philand, prevPhiland]);
+  }, [philand]);
 
   const { invoke: invokeBatchWriteObject } = useStarknetInvoke({
     contract,
