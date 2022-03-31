@@ -1,9 +1,16 @@
 import axios from "axios";
-import { COUPON_API_ENDPOINT, L2_MATERIAL_CONTRACT_ADDRESS } from "~/constants";
+import {
+  COUPON_API_ENDPOINT,
+  L2_MATERIAL_CONTRACT_ADDRESS,
+  MetaCraftedMaterialContractAddress,
+  MetaPrimitiveMaterialContractAddress,
+} from "~/constants";
 import { Coupon, CouponConditionMap, ObjectID } from "~/types";
 import { L2_OBJECT_CONTRACT_ADDRESS } from "~/constants";
 import { toBN, toNumber } from "./cairo";
 import { Contract, hash, number } from "starknet";
+
+const endpoint = "https://alpha4.starknet.io/feeder_gateway/call_contract?blockId=null";
 
 export const getCoupon = async (
   account: string,
@@ -19,7 +26,6 @@ export const getCoupon = async (
 };
 
 export const fetchMyObjects = async (starknetAccount: string) => {
-  const endpoint = "https://alpha4.starknet.io/feeder_gateway/call_contract?blockId=null";
   const len = 12;
   const owners = [...new Array(len)].map(() => toBN(starknetAccount));
   const tokenIDs = [...new Array(len)].reduce((memo, _, i) => [...memo, toBN(i + 1), toBN(0)], []);
@@ -48,5 +54,41 @@ export const fetchMyMaterials = async (starknetAccount: string, materialContract
   return {
     contractAddress: L2_MATERIAL_CONTRACT_ADDRESS,
     list: materias.map((material) => toNumber(material.res)),
+  };
+};
+
+export const fetchMetaPrimitiveMaterials = async (starknetAccount: string) => {
+  const len = 4;
+  const owners = [...new Array(len)].map(() => toBN(starknetAccount));
+  const tokenIDs = [...new Array(len)].reduce((memo, _, i) => [...memo, toBN(i), toBN(0)], []);
+  const res = await axios.post<{ result: string[] }>(endpoint, {
+    signature: [],
+    calldata: [toBN(len), ...owners, toBN(len), ...tokenIDs],
+    contract_address: MetaPrimitiveMaterialContractAddress,
+    entry_point_selector: number.toHex(hash.starknetKeccak("balance_of_batch")),
+  });
+  const objects = res.data.result.map((res) => toNumber(res));
+  objects.shift();
+  return {
+    contractAddress: MetaPrimitiveMaterialContractAddress,
+    list: objects,
+  };
+};
+
+export const fetchMetaCraftedMaterials = async (starknetAccount: string) => {
+  const len = 8;
+  const owners = [...new Array(len)].map(() => toBN(starknetAccount));
+  const tokenIDs = [...new Array(len)].reduce((memo, _, i) => [...memo, toBN(i), toBN(0)], []);
+  const res = await axios.post<{ result: string[] }>(endpoint, {
+    signature: [],
+    calldata: [toBN(len), ...owners, toBN(len), ...tokenIDs],
+    contract_address: MetaCraftedMaterialContractAddress,
+    entry_point_selector: number.toHex(hash.starknetKeccak("balance_of_batch")),
+  });
+  const objects = res.data.result.map((res) => toNumber(res));
+  objects.shift();
+  return {
+    contractAddress: MetaCraftedMaterialContractAddress,
+    list: objects,
   };
 };

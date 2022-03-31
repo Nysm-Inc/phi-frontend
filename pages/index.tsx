@@ -25,7 +25,12 @@ import { useStarknet, useContract, useStarknetCall, useStarknetInvoke, InjectedC
 import { PhiLogo, TwitterWhite } from "~/public";
 import { ObjectID, defaultPhiland, defaultPhilandLinks, PhilandHolder } from "~/types";
 import { Cell, Search } from "~/components/philand";
-import { frontendURL, L1_MESSAGE_CONTRACT_ADDRESS, L2_PHILAND_CONTRACT_ADDRESS } from "~/constants";
+import {
+  frontendURL,
+  L1_MESSAGE_CONTRACT_ADDRESS,
+  L2_OBJECT_CONTRACT_ADDRESS,
+  L2_PHILAND_CONTRACT_ADDRESS,
+} from "~/constants";
 import { L1MessageAbi, L2PhilandAbi } from "~/abi";
 import { AppContext } from "~/contexts";
 import { toastOption } from "~/components/transaction";
@@ -274,6 +279,7 @@ const Index: NextPage = () => {
                       x={i}
                       y={j}
                       objectID={cell}
+                      contractAddress={L2_OBJECT_CONTRACT_ADDRESS}
                       externalLink={philandLinks[i][j]}
                       isEdit={isEdit}
                       handleChange={(objectID) => handleChangePhiland(i, j, objectID)}

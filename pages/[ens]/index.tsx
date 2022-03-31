@@ -6,7 +6,7 @@ import { Abi } from "starknet";
 import { useContract, useStarknetCall } from "@starknet-react/core";
 import { ObjectID, defaultPhiland, defaultPhilandLinks } from "~/types";
 import { Cell } from "~/components/philand";
-import { L2_PHILAND_CONTRACT_ADDRESS } from "~/constants";
+import { L2_OBJECT_CONTRACT_ADDRESS, L2_PHILAND_CONTRACT_ADDRESS } from "~/constants";
 import { L2PhilandAbi } from "~/abi";
 import { stringToBN, toBN } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
@@ -66,6 +66,7 @@ const Index: NextPage = () => {
                 y={j}
                 externalLink={philandLinks[i][j]}
                 objectID={cell}
+                contractAddress={L2_OBJECT_CONTRACT_ADDRESS}
                 isEdit={false}
               />
             ))}
