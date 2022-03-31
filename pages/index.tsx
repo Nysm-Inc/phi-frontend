@@ -54,7 +54,6 @@ const Index: NextPage = () => {
   const [philand, setPhiland] = useState<ObjectID[][]>(defaultPhiland);
   const [prevPhiland, setPrevPhiland] = useState<ObjectID[][]>(defaultPhiland);
   const [philandLinks, setPhilandLink] = useState<string[][]>(defaultPhilandLinks);
-  const [isCheckedPhilandHolder, setIsCheckedPhilandHolder] = useState(false);
   const { data: dataPhiland } = useStarknetCall({
     contract,
     method: "view_philand",
@@ -165,7 +164,6 @@ const Index: NextPage = () => {
         };
       });
       setPhilandHolders(holders);
-      setIsCheckedPhilandHolder(true);
     })();
   }, [account, refleshPhilandHolders]);
 
@@ -334,7 +332,7 @@ const Index: NextPage = () => {
                   fontWeight="bold"
                   fontSize="lg"
                   color="gray.800"
-                  disabled={!isCheckedPhilandHolder}
+                  disabled={philandHolders.length <= 0}
                 >
                   Create Philand
                 </Button>
