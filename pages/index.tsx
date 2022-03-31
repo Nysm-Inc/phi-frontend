@@ -36,13 +36,7 @@ import { AppContext } from "~/contexts";
 import { toastOption } from "~/components/transaction";
 import { stringToBN, toBN } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
-import {
-  convertPhiland,
-  convertPhilandLinks,
-  fetchPhilandHolders,
-  isEmptyLinks,
-  isEmptyPhiland,
-} from "~/utils/philand";
+import { convertPhiland, convertPhilandLinks, isEmptyLinks, isEmptyPhiland } from "~/utils/philand";
 
 const Index: NextPage = () => {
   const { account, starknetAccount, currentENS, isEdit, isCreatedPhiland, handleCreatePhiland } =
@@ -151,12 +145,29 @@ const Index: NextPage = () => {
   }, [dataLinks]);
 
   useEffect(() => {
+    if (!account) return;
+
+    // @ts-ignore
+    const web3 = new Web3(window.ethereum);
+    // @ts-ignore
+    const contractL1 = new web3.eth.Contract(L1MessageAbi.abi, L1_MESSAGE_CONTRACT_ADDRESS);
+
     (async () => {
-      const holders = await fetchPhilandHolders();
+      const events = await contractL1.getPastEvents("LogCreatePhiland", {
+        fromBlock: 6521883, // oldest
+        toBlock: "latest",
+      });
+
+      const holders: PhilandHolder[] = events.map((event) => {
+        return {
+          address: event.returnValues.l1Sender,
+          ens: event.returnValues.name + ".eth",
+        };
+      });
       setPhilandHolders(holders);
       setIsCheckedPhilandHolder(true);
     })();
-  }, [refleshPhilandHolders]);
+  }, [account, refleshPhilandHolders]);
 
   useEffect(() => {
     handleCreatePhiland(false);
