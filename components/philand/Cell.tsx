@@ -17,7 +17,12 @@ import { RiExternalLinkLine, RiDeleteBin6Line, RiCheckFill } from "react-icons/r
 import { Abi } from "starknet";
 import { useStarknet, useContract, useStarknetInvoke, InjectedConnector } from "@starknet-react/core";
 import { ObjectID } from "~/types";
-import { L2_OBJECT_CONTRACT_ADDRESS, L2_PHILAND_CONTRACT_ADDRESS } from "~/constants";
+import {
+  L2_MATERIAL_CONTRACT_ADDRESS,
+  L2_OBJECT_CONTRACT_ADDRESS,
+  L2_PHILAND_CONTRACT_ADDRESS,
+  MetaPrimitiveMaterialContractAddress,
+} from "~/constants";
 import { L2PhilandAbi } from "~/abi";
 import { toBN, stringToBN } from "~/utils/cairo";
 import { AppContext } from "~/contexts";
@@ -27,10 +32,14 @@ const Cell: VFC<{
   x: number;
   y: number;
   objectID: ObjectID;
+  contractAddress:
+    | typeof L2_OBJECT_CONTRACT_ADDRESS
+    | typeof L2_MATERIAL_CONTRACT_ADDRESS
+    | typeof MetaPrimitiveMaterialContractAddress;
   externalLink: string;
   isEdit: boolean;
   handleChange?: (objectID: ObjectID) => void;
-}> = ({ x, y, objectID, externalLink, isEdit, handleChange }) => {
+}> = ({ x, y, objectID, contractAddress, externalLink, isEdit, handleChange }) => {
   const theme = useTheme();
   const { contract } = useContract({ abi: L2PhilandAbi as Abi, address: L2_PHILAND_CONTRACT_ADDRESS });
   const { connect } = useStarknet();
@@ -60,7 +69,7 @@ const Cell: VFC<{
       accept: "OBJECT",
       canDrop: () => objectID === 0 && isEdit,
       // @ts-ignore
-      drop: (item, monitor) => handleChange(item.name),
+      drop: (item, monitor) => handleChange(item.id),
       collect: (monitor) => ({
         canDrop: monitor.canDrop(), // memo: styling
       }),
@@ -189,7 +198,7 @@ const Cell: VFC<{
           >
             {objectID ? (
               <ObjectComponent
-                contractAddress={L2_OBJECT_CONTRACT_ADDRESS}
+                contractAddress={contractAddress}
                 size={48}
                 canDrag={isEdit}
                 objectID={objectID}

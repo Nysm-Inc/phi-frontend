@@ -27,3 +27,7 @@ export const PHILAND_HOLDERS_API_ENDPOINT = `${OFF_CHAIN_API_ENDPOINT}/philand_h
 export const currentENSKey = "currentENSKey";
 export const frontendURL = "https://goerli.philand.xyz";
 export const phiENSDomain = "phi.eth";
+
+export const MetaPrimitiveMaterialContractAddress =
+  "0x071d8da7a18b46e8e9a819c4c9990a0c5c7f26ecf577607ace629f387a980242";
+export const MetaCraftedMaterialContractAddress = "0x03c41a9cf2c8aa1af874db7fb00aed431eb1545d9591b643d86c0d54c2cd935b";

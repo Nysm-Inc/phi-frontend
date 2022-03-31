@@ -30,7 +30,14 @@ import {
 import { RiEdit2Fill, RiArrowGoBackFill, RiQuestionFill } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { EnsLogo, Soil, Uniswap, LootBalance, Twitter, Discord } from "~/public";
-import { ObjectID, ObjectNameMap, defaultCoupon, CouponConditionMap, MaterialNameMap } from "~/types";
+import {
+  ObjectID,
+  ObjectNameMap,
+  defaultCoupon,
+  CouponConditionMap,
+  MaterialNameMap,
+  MetaPrimitiveMaterialNameMap,
+} from "~/types";
 import { stringToBN, toBN, toNumber } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
 import { L1MessageAbi, L2LoginAbi, L2MaterialAbi, L2PhilandAbi } from "~/abi";
@@ -45,6 +52,8 @@ import {
   L2_OBJECT_CONTRACT_ADDRESS,
   L2_PHILAND_CONTRACT_ADDRESS,
   LOGIN_DURATION,
+  MetaCraftedMaterialContractAddress,
+  MetaPrimitiveMaterialContractAddress,
   TWITTER_URL,
 } from "~/constants";
 import { TrackTxStarknet, toastOption } from "~/components/transaction";
@@ -54,7 +63,13 @@ import Header from "./Header";
 import Head from "./Head";
 import LayoutTooltip from "./Tooltip";
 import { ModalMenu, MyObject, ClaimObject } from "./types";
-import { fetchMyMaterials, fetchMyObjects, getCoupon } from "~/utils/object";
+import {
+  fetchMetaCraftedMaterials,
+  fetchMetaPrimitiveMaterials,
+  fetchMyMaterials,
+  fetchMyObjects,
+  getCoupon,
+} from "~/utils/object";
 
 const Layout: FC = ({ children }) => {
   const {
@@ -202,16 +217,25 @@ const Layout: FC = ({ children }) => {
       const response = await Promise.all([
         fetchMyObjects(starknetAccount),
         fetchMyMaterials(starknetAccount, materialContract),
+        fetchMetaPrimitiveMaterials(starknetAccount),
+        fetchMetaCraftedMaterials(starknetAccount),
       ]);
 
       response.forEach((res) => {
         res.list.forEach((object, i) => {
           [...new Array(object)].forEach(() => {
+            // todo
+            let objectID = i;
+            let address = res.contractAddress;
+            if (res.contractAddress === MetaCraftedMaterialContractAddress) {
+              objectID += 12;
+              address = L2_OBJECT_CONTRACT_ADDRESS;
+            }
             fetchObjects.push({
-              objectID: i + 1,
-              isPuttable: res.contractAddress === L2_OBJECT_CONTRACT_ADDRESS,
+              objectID: objectID + 1,
+              isPuttable: address === L2_OBJECT_CONTRACT_ADDRESS,
               // @ts-ignore
-              contractAddress: res.contractAddress,
+              contractAddress: address,
             });
           });
         });
@@ -473,9 +497,13 @@ const Layout: FC = ({ children }) => {
                               textAlign="center"
                               lineHeight="none"
                             >
-                              {object.contractAddress === L2_OBJECT_CONTRACT_ADDRESS
-                                ? ObjectNameMap[object.objectID]
-                                : MaterialNameMap[object.objectID]}
+                              {
+                                {
+                                  [L2_OBJECT_CONTRACT_ADDRESS]: ObjectNameMap[object.objectID],
+                                  [L2_MATERIAL_CONTRACT_ADDRESS]: MaterialNameMap[object.objectID],
+                                  [MetaPrimitiveMaterialContractAddress]: MetaPrimitiveMaterialNameMap[object.objectID],
+                                }[object.contractAddress]
+                              }
                             </Text>
                           </Center>
                         ))}
