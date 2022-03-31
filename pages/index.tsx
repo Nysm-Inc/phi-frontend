@@ -131,13 +131,13 @@ const Index: NextPage = () => {
   };
 
   useEffect(() => {
-    if (isEmptyPhiland(dataPhiland)) return;
+    if (isEmptyPhiland(dataPhiland) || isEdit) return;
 
     const converted = convertPhiland(dataPhiland);
     handleCreatePhiland(true);
     setPrevPhiland(converted);
     setPhiland(converted);
-  }, [dataPhiland]);
+  }, [dataPhiland, isEdit]);
 
   useEffect(() => {
     if (isEmptyLinks(dataLinks)) return;
