@@ -30,7 +30,7 @@ import {
 import { RiEdit2Fill, RiArrowGoBackFill, RiQuestionFill } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { EnsLogo, Soil, Uniswap, LootBalance, Twitter, Discord } from "~/public";
-import { ObjectID, ObjectNameMap, defaultCoupon, CouponConditionMap, MaterialNameMap } from "~/types";
+import { ObjectID, ObjectNameMap, defaultCoupon, CouponConditionMap, MaterialNameMap, tileList } from "~/types";
 import { stringToBN, toBN, toNumber } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
 import { L1MessageAbi, L2LoginAbi, L2MaterialAbi, L2PhilandAbi } from "~/abi";
@@ -473,7 +473,13 @@ const Layout: FC = ({ children }) => {
                             w="32"
                             h="32"
                             borderRadius="md"
-                            bgImage="url(/land.svg)"
+                            // todo
+                            // bgImage="url(/land.svg)"
+                            bgImage={
+                              tileList.includes(object.objectID)
+                                ? `url("/meta_objects/${ObjectNameMap[object.objectID]}.png")`
+                                : "url(/land.svg)"
+                            }
                             position="relative"
                             opacity={object.isPuttable ? 1 : 0.5}
                           >

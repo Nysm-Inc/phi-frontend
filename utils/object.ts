@@ -76,7 +76,7 @@ export const fetchMetaPrimitiveMaterials = async (starknetAccount: string) => {
 };
 
 export const fetchMetaCraftedMaterials = async (starknetAccount: string) => {
-  const len = 8;
+  const len = 14;
   const owners = [...new Array(len)].map(() => toBN(starknetAccount));
   const tokenIDs = [...new Array(len)].reduce((memo, _, i) => [...memo, toBN(i), toBN(0)], []);
   const res = await axios.post<{ result: string[] }>(endpoint, {

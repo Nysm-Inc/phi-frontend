@@ -21,6 +21,12 @@ import MetaPla from "~/public/meta_objects/pla.png";
 import MetaSteel from "~/public/meta_objects/steel.png";
 import MetaComputer from "~/public/meta_objects/computer.png";
 import MetaDenki from "~/public/meta_objects/denki.png";
+import MetaTileRed from "~/public/meta_objects/Red Tile.png";
+import MetaTileBlue from "~/public/meta_objects/Blue Tile.png";
+import MetaTileGreen from "~/public/meta_objects/Green Tile.png";
+import MetaTileYellow from "~/public/meta_objects/Yellow Tile.png";
+import MetaTileBlack from "~/public/meta_objects/Black Tile.png";
+import MetaTileWhite from "~/public/meta_objects/White Tile.png";
 import { MaterialID, ObjectID } from "~/types";
 
 export const ObjectImages: { [key in ObjectID]: StaticImageData } = {
@@ -49,6 +55,12 @@ export const ObjectImages: { [key in ObjectID]: StaticImageData } = {
   22: MetaSteel,
   23: MetaComputer,
   24: MetaDenki,
+  25: MetaTileRed,
+  26: MetaTileBlue,
+  27: MetaTileGreen,
+  28: MetaTileYellow,
+  29: MetaTileBlack,
+  30: MetaTileWhite,
 };
 
 export const MaterialImages: { [key in MaterialID]: StaticImageData } = {

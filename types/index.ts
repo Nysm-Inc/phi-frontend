@@ -25,7 +25,15 @@ export const ObjectNameMap: { [key in ObjectID]: string } = {
   22: "Plastic",
   23: "Computer",
   24: "ElectronicsStore",
+  25: "Red Tile",
+  26: "Blue Tile",
+  27: "Green Tile",
+  28: "Yellow Tile",
+  29: "Black Tile",
+  30: "White Tile",
 };
+
+export const tileList = [25, 26, 27, 28, 29, 30];
 
 export type ObjectName = "snapshot" | "uniswap" | "lootbalance" | "ethbalance" | "polygon";
 export type CouponCondition = {
@@ -85,6 +93,12 @@ export const ObjectMetadata: { [key in ObjectID]: string } = {
   22: "https://www.arweave.net/teFq3fe-G_ea7KgHfWuDFunyZ-IqmIcWu9ko_mKub1g",
   23: "https://www.arweave.net/XS1uJMGquJgeeqwq3KPjXqhAhHTFp0KJfZX0hK5_v68",
   24: "https://www.arweave.net/fLBsJwFYAiN8pWXwDDFJqam2WRYdo9QsYb6KmXzAf24",
+  25: "https://www.arweave.net/_Q7UniNSu3zpxU9b6TPJPpaduoSzpvnRtb62NgMaKOw",
+  26: "https://www.arweave.net/LAIeXqKNDxCfz0d_3vysE-8raYaYMs8puTfz1QR3dZA",
+  27: "https://www.arweave.net/QxHUMGa8y5lAsC14OgIseeMgGEvYq7FJO0HphGnjhaw",
+  28: "https://www.arweave.net/by4EjfysmT2KUUEyE-v9rGw0KtRRrm4gEEqLAxQO4_o",
+  29: "https://www.arweave.net/_7hV1aMIJNueEVIBcXvnzhzbMYZoBqw8ntMBbUAK0uI",
+  30: "https://www.arweave.net/2uRzkJzN7HfFRZRjxdGUTiMW6OrIRq8OSWnAG4rKpLY",
 };
 
 export type Metadata = {

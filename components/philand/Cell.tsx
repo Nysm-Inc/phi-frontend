@@ -16,7 +16,7 @@ import {
 import { RiExternalLinkLine, RiDeleteBin6Line, RiCheckFill } from "react-icons/ri";
 import { Abi } from "starknet";
 import { useStarknet, useContract, useStarknetInvoke, InjectedConnector } from "@starknet-react/core";
-import { ObjectID } from "~/types";
+import { ObjectID, ObjectNameMap, tileList } from "~/types";
 import { L2_MATERIAL_CONTRACT_ADDRESS, L2_OBJECT_CONTRACT_ADDRESS, L2_PHILAND_CONTRACT_ADDRESS } from "~/constants";
 import { L2PhilandAbi } from "~/abi";
 import { toBN, stringToBN } from "~/utils/cairo";
@@ -76,7 +76,11 @@ const Cell: VFC<{
           <PopoverTrigger>
             <Center
               ref={drop}
-              bgImage="url(/land.svg)"
+              // todo
+              // bgImage="url(/land.svg)"
+              bgImage={
+                tileList.includes(objectID) ? `url("/meta_objects/${ObjectNameMap[objectID]}.png")` : "url(/land.svg)"
+              }
               cursor="pointer"
               w="16"
               h="16"
@@ -173,7 +177,11 @@ const Cell: VFC<{
         >
           <Center
             ref={drop}
-            bgImage="url(/land.svg)"
+            // todo
+            // bgImage="url(/land.svg)"
+            bgImage={
+              tileList.includes(objectID) ? `url("/meta_objects/${ObjectNameMap[objectID]}.png")` : "url(/land.svg)"
+            }
             cursor="pointer"
             w="20"
             h="20"
