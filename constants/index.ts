@@ -18,7 +18,6 @@ export const L2_PHILAND_CONTRACT_ADDRESS = "0x00ba017ce59ea233531242639f411922dd
 export const L2_LOGIN_CONTRACT_ADDRESS = "0x01976dc5441a6bb5e21401aa990dddb4df8d6c728d6ffd57cd8e802a8d7bc694";
 export const L2_MATERIAL_CONTRACT_ADDRESS = "0x019f842e3549b97749460582aa7829c6d97d2cedbd6c633600b7ca53621a5d24";
 export const L2_OBJECT_CONTRACT_ADDRESS = "0x0578c0af578c16d29acbf6e1ef02c1b17f9ccb47788b5070a91dd344b536814e";
-export const LOGIN_DURATION = 60 * 60 * 24;
 
 export const OFF_CHAIN_API_ENDPOINT = "https://tvg7doaggc.execute-api.ap-northeast-1.amazonaws.com/prod/v1/philand";
 export const COUPON_API_ENDPOINT = `${OFF_CHAIN_API_ENDPOINT}/coupons`;

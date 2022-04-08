@@ -4,7 +4,7 @@ import { FC, useState, useCallback, useEffect, useContext } from "react";
 import Web3 from "web3";
 import { metaMask } from "~/connectors/metamask";
 import { Abi, shortString } from "starknet";
-import { useStarknet, useContract, useStarknetCall, useStarknetInvoke, InjectedConnector } from "@starknet-react/core";
+import { useStarknet, useContract, useStarknetInvoke, InjectedConnector } from "@starknet-react/core";
 import {
   Box,
   Text,
@@ -31,7 +31,7 @@ import { RiEdit2Fill, RiArrowGoBackFill, RiQuestionFill } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { EnsLogo, Soil, Uniswap, LootBalance, Twitter, Discord } from "~/public";
 import { ObjectID, ObjectNameMap, defaultCoupon, CouponConditionMap, MaterialNameMap, tileList } from "~/types";
-import { stringToBN, toBN, toNumber } from "~/utils/cairo";
+import { stringToBN, toBN } from "~/utils/cairo";
 import { formatENS } from "~/utils/ens";
 import { L1MessageAbi, L2LoginAbi, L2MaterialAbi, L2PhilandAbi } from "~/abi";
 import {
@@ -44,7 +44,6 @@ import {
   L2_MATERIAL_CONTRACT_ADDRESS,
   L2_OBJECT_CONTRACT_ADDRESS,
   L2_PHILAND_CONTRACT_ADDRESS,
-  LOGIN_DURATION,
   MetaCraftedMaterialContractAddress,
   MetaPrimitiveMaterialContractAddress,
   TWITTER_URL,
@@ -56,13 +55,7 @@ import Header from "./Header";
 import Head from "./Head";
 import LayoutTooltip from "./Tooltip";
 import { ModalMenu, MyObject, ClaimObject } from "./types";
-import {
-  fetchMetaCraftedMaterials,
-  fetchMetaPrimitiveMaterials,
-  fetchMyMaterials,
-  fetchMyObjects,
-  getCoupon,
-} from "~/utils/object";
+import { fetchMetaCraftedMaterials, fetchMetaPrimitiveMaterials, fetchMyObjects, getCoupon } from "~/utils/object";
 
 const Layout: FC = ({ children }) => {
   const {
@@ -106,15 +99,6 @@ const Layout: FC = ({ children }) => {
   const [modalMenu, setModalMenu] = useState<ModalMenu>(undefined);
   const [refleshMyObjects, setRefleshMyObjects] = useState(false);
 
-  const { data: elapsedLoginTime } = useStarknetCall({
-    contract: loginContract,
-    method: "check_elapsed_time",
-    args: currentENS ? [[stringToBN(currentENS), toBN(0)]] : [],
-  });
-  const { invoke: invokeClaimLoginBonus } = useStarknetInvoke({
-    contract: loginContract,
-    method: "get_reward",
-  });
   const { invoke: invokeClaimStarterkit } = useStarknetInvoke({
     contract: philandContract,
     method: "claim_starter_object",
@@ -209,7 +193,6 @@ const Layout: FC = ({ children }) => {
       const fetchObjects: MyObject[] = [];
       const response = await Promise.all([
         fetchMyObjects(starknetAccount),
-        fetchMyMaterials(starknetAccount, materialContract),
         fetchMetaPrimitiveMaterials(starknetAccount),
         fetchMetaCraftedMaterials(starknetAccount),
       ]);
@@ -358,29 +341,6 @@ const Layout: FC = ({ children }) => {
                 onClick={() => {
                   if (starknetAccount) {
                     handleOpenClaimObjects();
-                  } else {
-                    connect(new InjectedConnector());
-                  }
-                }}
-              />
-            </LayoutTooltip>
-            <LayoutTooltip label="Login Bonus">
-              <IconButton
-                w="16"
-                h="16"
-                bgColor="white"
-                aria-label="login_bonus"
-                icon={<Image src={Soil} width="40px" height="40px" />}
-                // @ts-ignore
-                disabled={!(elapsedLoginTime && toNumber(elapsedLoginTime?.elapsed_time) >= LOGIN_DURATION)}
-                onClick={() => {
-                  if (starknetAccount) {
-                    invokeClaimLoginBonus({
-                      args: [[stringToBN(currentENS), toBN(0)], toBN(starknetAccount)],
-                    }).then((tx) => {
-                      setModalMenu("login_bonus");
-                      onOpen();
-                    });
                   } else {
                     connect(new InjectedConnector());
                   }

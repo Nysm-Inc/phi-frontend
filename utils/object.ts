@@ -1,14 +1,13 @@
 import axios from "axios";
 import {
   COUPON_API_ENDPOINT,
-  L2_MATERIAL_CONTRACT_ADDRESS,
   MetaCraftedMaterialContractAddress,
   MetaPrimitiveMaterialContractAddress,
 } from "~/constants";
 import { Coupon, CouponConditionMap, ObjectID } from "~/types";
 import { L2_OBJECT_CONTRACT_ADDRESS } from "~/constants";
 import { toBN, toNumber } from "./cairo";
-import { Contract, hash, number } from "starknet";
+import { hash, number } from "starknet";
 
 const endpoint = "https://alpha4.starknet.io/feeder_gateway/call_contract?blockId=null";
 
@@ -40,20 +39,6 @@ export const fetchMyObjects = async (starknetAccount: string) => {
   return {
     contractAddress: L2_OBJECT_CONTRACT_ADDRESS,
     list: objects,
-  };
-};
-
-export const fetchMyMaterials = async (starknetAccount: string, materialContract: Contract) => {
-  const requests = [];
-  const len = 2;
-  for (let idx = 1; idx <= len; idx++) {
-    const request = materialContract.call("balance_of", [toBN(starknetAccount), [toBN(idx), toBN(0)]]);
-    requests.push(request);
-  }
-  const materias = await Promise.all(requests);
-  return {
-    contractAddress: L2_MATERIAL_CONTRACT_ADDRESS,
-    list: materias.map((material) => toNumber(material.res)),
   };
 };
 
