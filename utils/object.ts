@@ -9,7 +9,7 @@ import { L2_OBJECT_CONTRACT_ADDRESS } from "~/constants";
 import { toBN, toNumber } from "./cairo";
 import { hash, number } from "starknet";
 
-const endpoint = "https://alpha4.starknet.io/feeder_gateway/call_contract?blockId=null";
+const endpoint = "https://alpha4.starknet.io/feeder_gateway/call_contract";
 
 export const getCoupon = async (
   account: string,
