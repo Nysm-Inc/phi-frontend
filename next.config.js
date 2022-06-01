@@ -10,6 +10,15 @@ const nextConfig = {
     config.resolve.alias["~"] = path.join(__dirname, ".");
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: "/(.*)",
+        destination: "https://philand.xyz",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
